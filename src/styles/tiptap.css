@@ -1,0 +1,116 @@
+.editor {
+  @apply max-w-none flex-1 overflow-hidden;
+  @apply bg-white dark:bg-gray-900;
+  @apply border-y border-gray-200 dark:border-gray-700 focus-within:border-blue-400;
+  @apply focus-within:shadow-inner;
+  @apply overflow-hidden;
+}
+
+.editor-content {
+  @apply w-full h-full p-5 flex flex-col overflow-y-auto;
+}
+
+.editor-content::-webkit-scrollbar {
+  @apply w-2;
+}
+
+.editor-content::-webkit-scrollbar-track {
+  @apply bg-gray-100 dark:bg-neutral-700;
+}
+
+.editor-content::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 dark:bg-neutral-500 rounded-full;
+}
+
+.ProseMirror {
+  @apply flex-1;
+}
+
+.ProseMirror:focus-visible {
+  outline: none;
+}
+
+.ProseMirror {
+  :first-child {
+    margin-top: 0;
+  }
+
+  h1,
+  h2 {
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  h3,
+  p {
+    margin-top: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  h1 {
+    @apply text-2xl font-bold;
+  }
+  h2 {
+    @apply text-xl font-bold;
+  }
+  h3 {
+    @apply text-lg font-semibold;
+  }
+  p {
+    @apply text-base;
+  }
+
+  ul,
+  ol {
+    padding: 0 1rem;
+    margin: 0.75rem 1rem 0.75rem 0.4rem;
+
+    li p {
+      margin-top: 0.25em;
+      margin-bottom: 0.25em;
+    }
+  }
+
+  ul[data-type="taskList"] {
+    list-style: none;
+    margin-left: 0;
+    padding: 0;
+
+    li {
+      align-items: flex-start;
+      display: flex;
+
+      > label {
+        flex: 0 0 auto;
+        margin-top: 0.3rem;
+        margin-right: 0.5rem;
+        user-select: none;
+      }
+
+      > div {
+        flex: 1 1 auto;
+      }
+    }
+
+    input[type="checkbox"] {
+      cursor: pointer;
+    }
+
+    ul[data-type="taskList"] {
+      margin: 0;
+    }
+  }
+
+  a {
+    text-decoration: underline;
+    color: #6229ff;
+    cursor: pointer;
+  }
+
+  code {
+    background-color: #5805ff0c;
+    border-radius: 0.4rem;
+    color: #2e2b29;
+    font-size: 0.85rem;
+    padding: 0.25em 0.3em;
+  }
+}

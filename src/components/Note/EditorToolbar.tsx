@@ -23,8 +23,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor, onImageUpl
   if (!editor) return null;
 
   const buttonClass = (active: boolean, disabled = false) =>
-    `p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ${
-      active ? 'text-blue-500' : 'text-gray-600 dark:text-gray-400'
+    `p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ${active ? 'text-blue-500' : 'text-gray-600 dark:text-gray-400'
     } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`;
 
   const divider = (
@@ -61,7 +60,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor, onImageUpl
   };
 
   return (
-    <div className="sticky top-0 z-10 bg-white dark:bg-gray-900 flex flex-wrap items-center gap-1 py-2 px-2 border-b border-gray-200 dark:border-gray-700">
+    <div className="sticky top-0 z-10 bg-white dark:bg-gray-900 flex flex-wrap items-center gap-1 px-5 py-2 border-b border-gray-200 dark:border-gray-700">
       {/* Text formatting */}
       <button
         onClick={() => editor.chain().focus().toggleBold().run()}
@@ -229,7 +228,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor, onImageUpl
         onClick={setLink}
         className={buttonClass(editor.isActive('link'))}
         aria-label="Insert Link"
-        title="Insert Link"
+        title={!editor.isActive('link') ? "Insert Link" : "Edit Link"}
       >
         <Link size={18} />
       </button>
