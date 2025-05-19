@@ -1,0 +1,384 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: #FFFFFF;
+    --foreground: #1F2937;
+
+    /* Primary colors */
+    --primary: #FCD34D; /* Yellow for buttons */
+    --primary-hover: #FBBF24;
+    --primary-foreground: #1F2937;
+
+    /* Border colors */
+    --border: #E5E7EB;
+    --border-light: #F3F4F6;
+
+    /* Card and input colors */
+    --card: #FFFFFF;
+    --card-foreground: #1F2937;
+    --input: #F9FAFB;
+
+    /* Text colors */
+    --text-primary: #1F2937;
+    --text-secondary: #6B7280;
+    --text-tertiary: #9CA3AF;
+  }
+
+  .dark {
+    --background: #1F2937;
+    --foreground: #F9FAFB;
+
+    /* Primary colors */
+    --primary: #FCD34D; /* Yellow for buttons */
+    --primary-hover: #FBBF24;
+    --primary-foreground: #1F2937;
+
+    /* Border colors */
+    --border: #374151;
+    --border-light: #374151;
+
+    /* Card and input colors */
+    --card: #374151;
+    --card-foreground: #F9FAFB;
+    --input: #374151;
+
+    /* Text colors */
+    --text-primary: #F9FAFB;
+    --text-secondary: #D1D5DB;
+    --text-tertiary: #9CA3AF;
+  }
+}
+
+/* Custom components */
+.note-card {
+  @apply bg-white rounded-lg border border-[--border] shadow-sm hover:shadow-md transition-shadow;
+  margin-bottom: 4px; /* Reduced margin between cards */
+}
+
+.dark .note-card {
+  @apply bg-[--card] border-[--border] text-[--foreground];
+}
+
+.new-note-button {
+  @apply bg-[#90D8B2] hover:bg-[#7BC09A] text-white px-2 py-1.5 rounded-md
+          flex items-center justify-center transition-colors;
+}
+
+.icon-button {
+  @apply p-1.5 rounded-md hover:bg-[--border-light] transition-colors text-[--text-secondary];
+}
+
+.dark .icon-button {
+  @apply hover:bg-[#4B5563] text-[--text-secondary];
+}
+
+.search-input {
+  @apply w-full bg-transparent outline-none text-sm py-1.5;
+}
+
+.search-bar-container {
+  @apply flex items-center gap-2 bg-[--input] rounded-md px-2 border border-[--border];
+}
+
+.dark .search-bar-container {
+  @apply bg-[--card] border-[--border] text-[--foreground] placeholder-gray-400;
+}
+
+/* Individual note view styling */
+.note-view {
+  @apply bg-[--background] text-[--foreground];
+}
+
+.dark .note-view {
+  @apply bg-[--background] text-[--foreground];
+}
+
+.note-content {
+  @apply bg-[--background] text-[--foreground];
+}
+
+.dark .note-content {
+  @apply bg-[--background] text-[--foreground];
+}
+
+.note-header {
+  @apply bg-[--background] border-b border-[--border];
+}
+
+.dark .note-header {
+  @apply bg-[--background] border-[--border] text-[--foreground];
+}
+
+.note-footer {
+  @apply bg-[--background] border-t border-[--border];
+}
+
+.dark .note-footer {
+  @apply bg-[--background] border-[--border] text-[--foreground];
+}
+
+/* Typography */
+.title-large {
+  @apply text-xl font-bold text-[--text-primary];
+}
+
+.dark .title-large {
+  @apply text-[--foreground];
+}
+
+.title-medium {
+  @apply text-lg font-semibold text-[--text-primary];
+}
+
+.dark .title-medium {
+  @apply text-[--foreground];
+}
+
+.text-secondary {
+  @apply text-sm text-[--text-secondary];
+}
+
+.dark .text-secondary {
+  @apply text-[--text-secondary];
+}
+
+/* Layout */
+.header {
+  @apply py-2 px-3 border-b border-[--border] bg-[--background];
+}
+
+.dark .header {
+  @apply bg-[--background] border-[--border];
+}
+
+.main-content {
+  @apply flex-1 p-4 bg-[--background] overflow-y-auto;
+  height: calc(100vh - 60px);
+  padding-bottom: 40px; /* Reduced padding to match the new footer height */
+}
+
+.dark .main-content {
+  @apply bg-[--background];
+}
+
+/* Toolbar */
+.toolbar {
+  @apply flex items-center gap-2 bg-[--input] p-2 rounded-lg;
+}
+
+.dark .toolbar {
+  @apply bg-[--card];
+}
+
+.toolbar-button {
+  @apply p-1 rounded hover:bg-white transition-colors text-[--text-secondary];
+}
+
+.dark .toolbar-button {
+  @apply hover:bg-[#4B5563] text-[--text-secondary];
+}
+
+/* Container for notes with smaller spacing */
+.notes-container {
+  @apply space-y-1; /* Reduced from space-y-4 to space-y-1 */
+}
+
+/* Animation */
+.fade-in {
+  @apply transition-opacity duration-200;
+}
+
+/* Status indicators */
+.status-saved {
+  @apply text-xs text-[--text-secondary] bg-[--border-light] px-2 py-1 rounded;
+}
+
+.dark .status-saved {
+  @apply text-[--text-secondary] bg-[#4B5563];
+}
+
+/* Feedback modal */
+.feedback-modal {
+  @apply fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-20;
+}
+
+.feedback-content {
+  @apply bg-white rounded-xl p-5 max-w-md w-full shadow-lg;
+}
+
+.dark .feedback-content {
+  @apply bg-[--card] text-[--foreground];
+}
+
+.feedback-option {
+  @apply flex items-center justify-center p-3 rounded-full hover:bg-gray-100 transition-colors;
+}
+
+.dark .feedback-option {
+  @apply hover:bg-[#4B5563];
+}
+
+/* Language dropdown */
+.language-dropdown {
+  @apply absolute bottom-8 right-0 bg-white rounded-lg shadow-lg border border-[--border] p-2 w-64 grid grid-cols-2 gap-2;
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 20;
+}
+
+.dark .language-dropdown {
+  @apply bg-[--card] border-[--border] text-[--foreground];
+}
+
+.language-option {
+  @apply flex items-center gap-2 p-2 rounded-md hover:bg-[--border-light] cursor-pointer text-sm;
+}
+
+.dark .language-option {
+  @apply hover:bg-[#4B5563];
+}
+
+.language-option.active {
+  @apply bg-[--border-light];
+}
+
+.dark .language-option.active {
+  @apply bg-[#4B5563];
+}
+
+/* Note star icon */
+.note-star-icon {
+  @apply h-4 w-4 text-gray-300 hover:text-yellow-400 transition-colors;
+}
+
+.note-star-favorite {
+  @apply h-4 w-4 text-yellow-400;
+}
+
+/* Filter styles */
+.filter-button {
+  @apply relative p-1 rounded-md transition-colors;
+}
+
+.filter-badge {
+  @apply absolute -top-1 -right-1 bg-blue-500 text-white rounded-full w-3 h-3 flex items-center justify-center text-xs;
+}
+
+.tag-filter-panel {
+  @apply bg-[--background] border-b border-[--border] py-2 px-4;
+}
+
+.dark .tag-filter-panel {
+  @apply bg-[--background] border-[--border];
+}
+
+/* Font size classes */
+.font-size-9 {
+  font-size: 9px !important;
+}
+
+.font-size-10 {
+  font-size: 10px !important;
+}
+
+.font-size-11 {
+  font-size: 11px !important;
+}
+
+.font-size-12 {
+  font-size: 12px !important;
+}
+
+.font-size-14 {
+  font-size: 14px !important;
+}
+
+.font-size-16 {
+  font-size: 16px !important;
+}
+
+.font-size-18 {
+  font-size: 18px !important;
+}
+
+/* Tiptap editor styles */
+.tiptap-editor-wrapper { /* Wrapper for consistent border and padding */
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 0.375rem; /* Tailwind's rounded-md */
+  background-color: var(--background);
+}
+
+.dark .tiptap-editor-wrapper {
+  border-color: var(--border);
+  background-color: var(--background);
+}
+
+.tiptap-editor {
+  min-height: 150px;
+  outline: none !important;
+  font-size: 1rem; /* Default font size */
+  line-height: 1.6;
+  color: var(--text-primary);
+  padding: 0.75rem; /* Tailwind's p-3 */
+}
+
+.dark .tiptap-editor {
+  color: var(--foreground);
+}
+
+.tiptap-editor:focus {
+  outline: none !important;
+}
+
+/* Content styling */
+.tiptap-editor p {
+  margin: 0.75em 0;
+}
+
+.tiptap-editor h1 {
+  font-size: 1.875rem; /* Tailwind's text-xl */
+  font-weight: bold;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.tiptap-editor h2 {
+  font-size: 1.5rem; /* Tailwind's text-lg */
+  font-weight: bold;
+  margin-top: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.tiptap-editor h3 {
+  font-size: 1.25rem; /* Tailwind's text-base */
+  font-weight: bold;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.tiptap-editor ul {
+  @apply list-disc list-inside pl-4;
+  margin: 0.75rem 0;
+}
+
+.tiptap-editor ol {
+  @apply list-decimal list-inside pl-4;
+  margin: 0.75rem 0;
+}
+
+.tiptap-editor ul li,
+.tiptap-editor ol li {
+  margin-bottom: 0.25rem;
+}
+
+/* Toolbar styling */
+.tiptap-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem; /* Tailwind's gap-2 */
+  padding: 0.75rem; /* Tailwind's p-3 */
+  background-color:
