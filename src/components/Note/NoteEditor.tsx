@@ -1,6 +1,6 @@
 // src/components/Note/NoteEditor.tsx
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { ArrowLeft, Smile, Download, Trash2, Copy, Check } from 'lucide-react'; 
+import { ArrowLeft, Smile, Download, Trash2, Copy, Check } from 'lucide-react';
 import { format, formatDistanceToNow } from 'date-fns';
 import { Note } from '../../types/note';
 import { noteStorage } from '../../services/noteStorage';
@@ -8,6 +8,7 @@ import ExportDialog from './ExportDialog';
 import EmojiPicker from './EmojiPicker';
 import TagInput from './TagInput';
 import RichTextEditor from './RichTextEditor';
+import { useRichTextEditor } from './useRichTextEditor';
 
 interface NoteEditorProps {
   note: Note | null;
@@ -17,10 +18,10 @@ interface NoteEditorProps {
   allAvailableTags?: string[]; // Available tags for suggestions
 }
 
-const NoteEditor: React.FC<NoteEditorProps> = ({ 
-  note, 
-  onBack, 
-  onDelete, 
+const NoteEditor: React.FC<NoteEditorProps> = ({
+  note,
+  onBack,
+  onDelete,
   onSave,
   allAvailableTags = []
 }) => {
@@ -47,13 +48,15 @@ const NoteEditor: React.FC<NoteEditorProps> = ({
   );
   // Add state for copy feedback
   const [isCopied, setIsCopied] = useState<boolean>(false);
-  
+
   // Add state to check if this is a new note
   const isNewNote = useMemo(() => !note?.id, [note?.id]);
-  
+
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const tagInputRef = useRef<HTMLInputElement>(null);
+
+  const [editorProps, editorActions] = useRichTextEditor()
 
   // Function to count words from HTML content
   const countWordsInHtml = (html: string): number => {
@@ -78,11 +81,11 @@ const NoteEditor: React.FC<NoteEditorProps> = ({
   // Save function
   const saveNote = async () => {
     if (!note) return;
-    
+
     try {
       const now = new Date();
       const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      
+
       const updatedNote: Note = {
         ...note,
         title,
@@ -92,7 +95,7 @@ const NoteEditor: React.FC<NoteEditorProps> = ({
         updatedAt: now,
         lastSavedAt: timeString
       };
-      
+
       await noteStorage.saveNote(updatedNote);
       onSave?.(updatedNote);
       setLastSavedTime(timeString);
@@ -110,7 +113,7 @@ const NoteEditor: React.FC<NoteEditorProps> = ({
       const tempDiv = document.createElement('div');
       tempDiv.innerHTML = content;
       const textContent = tempDiv.textContent || '';
-      
+
       const textToCopy = `${title}\n\n${textContent}`;
       await navigator.clipboard.writeText(textToCopy);
       setIsCopied(true);
@@ -155,7 +158,7 @@ const NoteEditor: React.FC<NoteEditorProps> = ({
       const tempDiv = document.createElement('div');
       tempDiv.innerHTML = content;
       const textContent = tempDiv.textContent || '';
-      
+
       let exportContent = '';
       switch (format) {
         case 'txt':
@@ -193,21 +196,23 @@ const NoteEditor: React.FC<NoteEditorProps> = ({
     }
   };
 
+
   const handleAddEmoji = (emoji: string) => {
     // For rich text editor, we need to insert at cursor position
     // This is handled by the editor instance itself
-    if (window.confirm("Adding emojis directly into rich text might not work at the cursor position. Would you like to add it at the end of the content instead?")) {
-      setContent(content + emoji);
-    }
+    editorActions.insertContentToCursor(emoji)
+    // if (window.confirm("Adding emojis directly into rich text might not work at the cursor position. Would you like to add it at the end of the content instead?")) {
+    //   setContent(content + emoji);
+    // }
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 flex flex-col">
+    <div className="h-screen bg-white dark:bg-gray-900 flex flex-col">
       {/* Compact header */}
       <header className="border-b border-gray-200 dark:border-gray-700 px-3 py-2 flex items-center justify-between bg-white dark:bg-gray-800">
         <div className="flex items-center gap-3 flex-1">
-          <button 
-            onClick={onBack} 
+          <button
+            onClick={onBack}
             className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
             aria-label="Go back"
           >
@@ -230,38 +235,40 @@ const NoteEditor: React.FC<NoteEditorProps> = ({
       </header>
 
       {/* Main content area with z-index to ensure sticky toolbar works */}
-      <main className="p-3 overflow-y-auto flex-1 bg-white dark:bg-gray-900 relative z-0" style={{ paddingBottom: '60px' }}>
+      <main className="relative z-0 flex-1 pb-11 overflow-y-hidden bg-white dark:bg-gray-900 flex flex-col">
         <RichTextEditor
           content={content}
+          onCreate={editorProps.onCreate}
+          onDestroy={editorProps.onDestroy}
           onChange={setContent}
           className="mb-3"
           autoFocus={isNewNote} // Add autoFocus prop based on whether it's a new note
         />
-        
+
         {/* Compact tags section */}
-        <div className="mt-2">
-          <TagInput 
-            tags={tags} 
+        <div className='px-3'>
+          <TagInput
+            tags={tags}
             onChange={setTags}
-            allTags={allAvailableTags} 
+            allTags={allAvailableTags}
           />
         </div>
       </main>
 
       {/* Compact footer */}
-      <footer className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-1 px-2 z-10">
+      <footer className="z-10 fixed bottom-0 left-0 right-0 px-2 py-1 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
         <div className="flex justify-between items-center">
           {/* Left side tools */}
           <div className="flex items-center">
-            <button 
+            <button
               onClick={() => setShowEmojiPicker(!showEmojiPicker)}
               className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors text-gray-600 dark:text-gray-300"
               aria-label="Add emoji"
             >
               <Smile className="h-4 w-4" />
             </button>
-            
-            <button 
+
+            <button
               onClick={() => setShowExportDialog(true)}
               className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors text-gray-600 dark:text-gray-300"
               aria-label="Export note"
@@ -270,7 +277,7 @@ const NoteEditor: React.FC<NoteEditorProps> = ({
             </button>
 
             {/* Copy button */}
-            <button 
+            <button
               onClick={copyNoteContent}
               className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors text-gray-600 dark:text-gray-300"
               aria-label="Copy note content"
@@ -279,7 +286,7 @@ const NoteEditor: React.FC<NoteEditorProps> = ({
               {isCopied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
             </button>
 
-            <button 
+            <button
               onClick={() => {
                 if (note?.id && window.confirm('Delete this note?')) {
                   onDelete?.(note.id);
@@ -299,7 +306,7 @@ const NoteEditor: React.FC<NoteEditorProps> = ({
               <span className="mx-1">{charCount}c</span>
               <span className="mx-1">{wordCount}w</span>
             </div>
-            
+
             {isSaved ? (
               <span className="text-xs text-green-600 bg-green-50 dark:bg-green-900 dark:text-green-300 px-1.5 py-0.5 rounded">
                 Saved
@@ -309,7 +316,7 @@ const NoteEditor: React.FC<NoteEditorProps> = ({
                 Saved at {lastSavedTime}
               </span>
             )}
-            
+
             {/* Copy feedback */}
             {isCopied && (
               <span className="text-xs text-green-600 bg-green-50 dark:bg-green-900 dark:text-green-300 px-1.5 py-0.5 rounded">

@@ -24,7 +24,7 @@ const TagInput: React.FC<TagInputProps> = ({ tags, onChange, allTags = [] }) => 
   const addTag = () => {
     const tagText = inputValue.trim();
     const cleanTag = tagText.toLowerCase();
-    
+
     if (cleanTag && !tags.includes(cleanTag)) {
       onChange([...tags, cleanTag]);
     }
@@ -54,31 +54,28 @@ const TagInput: React.FC<TagInputProps> = ({ tags, onChange, allTags = [] }) => 
       // Indigo
       'bg-indigo-100 text-indigo-800 dark:bg-indigo-700 dark:text-indigo-100',
     ];
-    
+
     const index = tag.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % colors.length;
     return colors[index];
   };
 
   return (
     <div className="relative">
-      <div 
+      <div
         className="flex flex-wrap items-center gap-1 py-1"
         onClick={() => inputRef.current?.focus()}
       >
-        {tags.length === 0 && inputValue === '' && (
-          <div className="flex items-center text-gray-400 dark:text-gray-500 text-xs">
-            <TagIcon className="h-3 w-3 mr-1" />
-            <span>To add tags press Enter...</span>
-          </div>
-        )}
-        
+        <div className="flex items-center text-gray-400 dark:text-gray-500 text-xs">
+          <TagIcon className="h-3 w-3 mr-1" />
+        </div>
+
         {tags.map((tag, index) => (
-          <div 
-            key={index} 
+          <div
+            key={index}
             className={`flex items-center ${getTagColor(tag)} text-xs px-2 py-0.5 rounded-full`}
           >
             <span>{tag}</span>
-            <button 
+            <button
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
@@ -90,7 +87,7 @@ const TagInput: React.FC<TagInputProps> = ({ tags, onChange, allTags = [] }) => 
             </button>
           </div>
         ))}
-        
+
         <input
           ref={inputRef}
           type="text"
@@ -102,8 +99,8 @@ const TagInput: React.FC<TagInputProps> = ({ tags, onChange, allTags = [] }) => 
               addTag();
             }
           }}
-          className="outline-none bg-transparent min-w-[80px] text-xs flex-grow dark:text-gray-200"
-          placeholder=""
+          className="min-w-[80px] bg-transparent text-xs flex-grow dark:text-gray-200 outline-none"
+          placeholder="To add tags press Enter..."
         />
       </div>
     </div>

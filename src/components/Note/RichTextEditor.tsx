@@ -14,9 +14,12 @@ import CodeBlock from '@tiptap/extension-code-block';
 import Strike from '@tiptap/extension-strike';
 import Heading from '@tiptap/extension-heading';
 import { EditorToolbar } from './EditorToolbar';
+import { useExtensions } from './extensions';
 
 interface RichTextEditorProps {
   content: string;
+  onCreate?: (editor: Editor) => void;
+  onDestroy?: () => void;
   onChange: (html: string) => void;
   className?: string;
   autoFocus?: boolean;
@@ -24,57 +27,23 @@ interface RichTextEditorProps {
 
 const RichTextEditor: React.FC<RichTextEditorProps> = ({
   content,
+  onCreate,
+  onDestroy,
   onChange,
   className = '',
   autoFocus = false,
 }) => {
+  const extensions = useExtensions()
   const editor = useEditor({
-    extensions: [
-      StarterKit.configure({
-        heading: {
-          levels: [1, 2, 3],
-        },
-        bulletList: {
-          HTMLAttributes: {
-            class: 'list-disc pl-4',
-          },
-        },
-        orderedList: {
-          HTMLAttributes: {
-            class: 'list-decimal pl-4',
-          },
-        },
-        codeBlock: {
-          HTMLAttributes: {
-            class: 'rounded-md bg-gray-100 dark:bg-gray-800 p-4 font-mono text-sm text-gray-800 dark:text-gray-200',
-          },
-        },
-      }),
-      Underline,
-      Placeholder.configure({
-        placeholder: 'Start writing your note...',
-      }),
-      Image.configure({
-        allowBase64: true,
-        inline: true,
-      }),
-      TaskList,
-      TaskItem.configure({
-        nested: true,
-      }),
-      TextAlign.configure({
-        types: ['heading', 'paragraph'],
-        alignments: ['left', 'center', 'right', 'justify'],
-      }),
-      Typography,
-      Link.configure({
-        openOnClick: false,
-      }),
-      CodeBlock,
-      Strike,
-      Heading, // Make sure Heading extension is included here as well
-    ],
+    extensions,
     content,
+    onCreate: ({ editor }) => {
+      onCreate?.(editor)
+      editor?.commands.focus()
+    },
+    onDestroy: () => {
+      onDestroy?.();
+    },
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());
     },
@@ -108,12 +77,14 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   };
 
   return (
-    <div className={`flex flex-col ${className}`}>
+    <div className={`flex-1 flex flex-col overflow-hidden ${className}`}>
       <EditorToolbar editor={editor as Editor} onImageUpload={handleImageUpload} />
-      <EditorContent
-        editor={editor}
-        className="prose prose-sm dark:prose-invert max-w-none tiptap-editor border border-gray-200 dark:border-gray-700 rounded-md p-3 min-h-[150px] bg-white dark:bg-gray-900 focus:outline-none"
-      />
+      <div className="editor">
+        <EditorContent
+          editor={editor}
+          className="editor-content prose prose-sm dark:prose-invert"
+        />
+      </div>
     </div>
   );
 };
